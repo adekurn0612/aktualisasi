@@ -27,7 +27,7 @@ const scheduleWebsiteChecker = () => {
         timezone: "Asia/Jakarta" 
     });
 
-    console.log('⏰ Website checker scheduled to run every 10 seconds.');
+    console.log('⏰ Website checker scheduled to run now');
 };
 
 app.listen(port,async ()=>{
@@ -35,7 +35,7 @@ app.listen(port,async ()=>{
   try {
       await DB.authenticate();
       console.log('Database OK');
-      scheduleWebsiteChecker();
+    //   scheduleWebsiteChecker();
   } catch (error) {
       console.error('Database Error',error);
   }

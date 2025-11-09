@@ -7,14 +7,12 @@ const getWebsitesToCheck = async () => {
 };
 
 export const checkAndSaveDomainStatus = async () => {
-    console.log(`[${new Date().toISOString()}] Starting website check...`);
 
     const domains = await getWebsitesToCheck();
-    
     const checkPromises = domains.map(async (d) => {
         const start = Date.now();
-        let newStatus = 1; 
-        let kode = 0;      
+        let newStatus = 1; // Default: UP
+        let kode = 0;      // Kode HTTP
         let latency = 0.0;
         
         try {
@@ -22,6 +20,7 @@ export const checkAndSaveDomainStatus = async () => {
             latency = Date.now() - start;
             kode = response.status;
 
+            // Anggap UP hanya jika status 2xx
             if (response.status < 200 || response.status >= 300) {
                 newStatus = 0; // DOWN
             }
@@ -31,11 +30,14 @@ export const checkAndSaveDomainStatus = async () => {
             newStatus = 0; // DOWN
             kode = error.response ? error.response.status : 503;
         }
+
+        // Kirim notifikasi hanya jika status berubah dari UP ke DOWN
         if (d.status === 1 && newStatus === 0) {
             const message = `⚠️ ${d.name || d.url} sedang DOWN! Status: ${kode}.`;
             sendTelegramMessage(message).catch(err => console.error('Failed to send Telegram:', err));
         }
 
+        // Update record di database
         await website.update({
             status: newStatus,         
             kode: kode,               
@@ -50,5 +52,5 @@ export const checkAndSaveDomainStatus = async () => {
 
     const results = await Promise.all(checkPromises);
     console.log(`[${new Date().toISOString()}] Website check finished.`);
-    return results;
+    return 
 };
