@@ -35,7 +35,7 @@ app.listen(port,async ()=>{
   try {
       await DB.authenticate();
       console.log('Database OK');
-    //   scheduleWebsiteChecker();
+      scheduleWebsiteChecker();
   } catch (error) {
       console.error('Database Error',error);
   }
