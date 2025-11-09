@@ -22,9 +22,6 @@ app.use(router);
 app.use(morgan("dev"));
 
 const scheduleWebsiteChecker = () => {
-    // Menjadwalkan tugas untuk berjalan setiap 10 detik
-    // Di lingkungan produksi, ganti '*/10 * * * * *' (setiap 10 detik) 
-    // dengan interval yang lebih panjang, misalnya '*/5 * * * *' (setiap 5 menit)
     cron.schedule('*/10 * * * * *', checkAndSaveDomainStatus, {
         scheduled: true,
         timezone: "Asia/Jakarta" 
