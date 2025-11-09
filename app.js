@@ -22,7 +22,7 @@ app.use(router);
 app.use(morgan("dev"));
 
 const scheduleWebsiteChecker = () => {
-    cron.schedule('*/10 * * * * *', checkAndSaveDomainStatus, {
+    cron.schedule(process.env.CRON, checkAndSaveDomainStatus, {
         scheduled: true,
         timezone: "Asia/Jakarta" 
     });

@@ -1,6 +1,6 @@
 // const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN; // Ambil dari .env
-const TELEGRAM_TOKEN = "8254538351:AAGdFphxYU7834e7w0bVTom39khF7nDKD60";
-const CHAT_ID = "7784468202";
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN
+const CHAT_ID = process.env.CHAT_ID
 
 export async function sendTelegramMessage(message) {
     try {
