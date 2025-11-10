@@ -51,7 +51,7 @@ app.use(router);
 
 const scheduleWebsiteChecker = () => {
     // Pastikan process.env.CRON tersedia dan valid
-    cron.schedule(process.env.CRON, checkAndSaveDomainStatus, {
+    cron.schedule(process.env.CRON ||"5 * * * *", checkAndSaveDomainStatus, {
         scheduled: true,
         timezone: "Asia/Jakarta" 
     });
