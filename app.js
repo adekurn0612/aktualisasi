@@ -11,9 +11,6 @@ require("dotenv").config();
 // Mengganti import router from "./routers/index.js";
 const router = require("./routers/index");
 
-// Mengganti import morgan from "morgan";
-const morgan = require("morgan");
-
 // Mengganti import cors from "cors"
 const cors = require("cors");
 
@@ -36,9 +33,6 @@ const app = express(); // Gunakan alias express
 const port = process.env.PORT;
 
 app.use(express.json());
-
-// PENTING: Middleware Morgan biasanya diletakkan di awal
-app.use(morgan("dev"));
 
 app.get("/about", (req, res) => {
     res.send("This is the about page.");
@@ -72,7 +66,7 @@ app.listen(port, async () => {
     try {
         await DB.authenticate();
         console.log('Database OK');
-        // scheduleWebsiteChecker();
+        scheduleWebsiteChecker();
     } catch (error) {
         // Logging error agar terlihat di stderr.log
         console.error('Database Error', error);
