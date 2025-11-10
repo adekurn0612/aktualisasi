@@ -3,19 +3,23 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js" 
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Backend untuk aktualisasi CPNS",
   "dependencies": {
-    "axios": "^1.13.2",
+    "axios": "^1.6.8",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "mysql2": "^3.15.3",
-    "node-cron": "^4.2.1",
-    "sequelize": "^6.37.7"
+    "dotenv": "^16.4.5", 
+    "express": "~4.19.2", 
+    "mysql2": "^3.9.7", 
+    "node-cron": "^3.0.3",
+    "sequelize": "^6.37.3" 
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
