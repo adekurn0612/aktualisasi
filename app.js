@@ -72,7 +72,7 @@ app.listen(port, async () => {
     try {
         await DB.authenticate();
         console.log('Database OK');
-        scheduleWebsiteChecker();
+        // scheduleWebsiteChecker();
     } catch (error) {
         // Logging error agar terlihat di stderr.log
         console.error('Database Error', error);
