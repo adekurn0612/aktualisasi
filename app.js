@@ -49,15 +49,31 @@ app.use(cors())
 app.use(router);
 
 
-const scheduleWebsiteChecker = () => {
+// const scheduleWebsiteChecker = () => {
     // Pastikan process.env.CRON tersedia dan valid
-    cron.schedule(process.env.CRON ||"5 * * * *", checkAndSaveDomainStatus, {
-        scheduled: true,
-        timezone: "Asia/Jakarta" 
-    });
+        
+        // cron.schedule(process.env.CRON ||"5 * * * *", checkAndSaveDomainStatus, {
+        //     scheduled: true,
+        //     timezone: "Asia/Jakarta" 
+        // })
+        // console.log('⏰ Website checker scheduled to run now');
+    
+//         cron.schedule('* * * * *', () => {
+//         console.log('running a task every minute');
+// });
+// };
 
-    console.log('⏰ Website checker scheduled to run now');
+const scheduleWebsiteChecker = () => {
+    const task = cron.schedule('* * * * *', () => {
+        console.log('Cron running every minute:', new Date());
+        checkAndSaveDomainStatus();
+    }, {
+        scheduled: true,
+        timezone: "Asia/Jakarta"
+    });
+    task.start();
 };
+
 
 
 app.listen(port, async () => {
