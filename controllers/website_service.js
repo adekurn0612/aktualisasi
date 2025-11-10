@@ -51,33 +51,34 @@ const checkAndSaveDomainStatus = async () => {
             // Gunakan 503 jika error tidak memiliki response (misalnya timeout, DNS error)
             kode = error.response ? error.response.status : 503;
         }
+        if (d.status !== newStatus) {
+            // Kirim notifikasi hanya jika status berubah dari UP ke DOWN
+            if (d.status === 1 && newStatus === 0) {
+                const message = `⚠️ ${d.name || d.url} sedang DOWN! Status: ${kode}.`;
+                // Pastikan error handling di sini juga menggunakan CommonJS jika sendTelegramMessage
+                // bergantung pada modul internal lain. Log errornya akan terlihat di stderr.log
+                sendTelegramMessage(message).catch(err => console.error('Failed to send Telegram:', err));
+            }
+            else if (d.status === 0 && newStatus === 1) {
+                const message = `✅ ${d.name || d.url} sedang Kembali Online!`;
+                // Pastikan error handling di sini juga menggunakan CommonJS jika sendTelegramMessage
+                // bergantung pada modul internal lain. Log errornya akan terlihat di stderr.log
+                sendTelegramMessage(message).catch(err => console.error('Failed to send Telegram:', err));
+            }
 
-        // Kirim notifikasi hanya jika status berubah dari UP ke DOWN
-        if (d.status === 1 && newStatus === 0) {
-            const message = `⚠️ ${d.name || d.url} sedang DOWN! Status: ${kode}.`;
-            // Pastikan error handling di sini juga menggunakan CommonJS jika sendTelegramMessage
-            // bergantung pada modul internal lain. Log errornya akan terlihat di stderr.log
-            sendTelegramMessage(message).catch(err => console.error('Failed to send Telegram:', err));
+            // Update record di database
+            await website.update({
+                status: newStatus,
+                code: kode,
+                // Pastikan latency disimpan sebagai string/number yang sesuai di DB
+                latency: parseFloat(latency).toFixed(2),
+                last_checked: new Date()
+            }, {
+                where: { id: d.id }
+            });
+
+            return { name: d.name, status: newStatus ? 'UP' : 'DOWN', kode, latency };
         }
-        else if (d.status === 0 && newStatus === 1) {
-            const message = `✅ ${d.name || d.url} sedang Kembali Online!`;
-            // Pastikan error handling di sini juga menggunakan CommonJS jika sendTelegramMessage
-            // bergantung pada modul internal lain. Log errornya akan terlihat di stderr.log
-            sendTelegramMessage(message).catch(err => console.error('Failed to send Telegram:', err));
-        }
-
-        // Update record di database
-        await website.update({
-            status: newStatus,
-            kode: kode,
-            // Pastikan latency disimpan sebagai string/number yang sesuai di DB
-            latency: parseFloat(latency).toFixed(2),
-            last_checked: new Date()
-        }, {
-            where: { id: d.id }
-        });
-
-        return { name: d.name, status: newStatus ? 'UP' : 'DOWN', kode, latency };
     });
 
     const results = await Promise.all(checkPromises);
