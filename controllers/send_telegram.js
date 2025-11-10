@@ -1,8 +1,12 @@
-// const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN; // Ambil dari .env
+// Import 'node-fetch' sebagai fallback atau solusi universal
+// Hapus baris ini jika Node.js di server Anda sudah mendukung global fetch
+const fetch = require('node-fetch'); 
+
+// Tidak perlu impor dotenv jika sudah dipanggil di app.js
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN
 const CHAT_ID = process.env.CHAT_ID
 
-export async function sendTelegramMessage(message) {
+async function sendTelegramMessage(message) {
     try {
         const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
         await fetch(url, {
@@ -17,3 +21,9 @@ export async function sendTelegramMessage(message) {
         throw err;
     }
 }
+
+// Mengganti 'export async function sendTelegramMessage'
+// Ekspor fungsi ini dalam bentuk objek agar bisa diakses dengan destructuring
+module.exports = { 
+    sendTelegramMessage 
+};

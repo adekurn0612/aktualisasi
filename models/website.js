@@ -1,5 +1,9 @@
-import { DataTypes } from "sequelize";
-import { DB } from "../config/connections.js";
+// Mengganti 'import { DataTypes } from "sequelize";'
+const { DataTypes } = require("sequelize");
+
+// Mengganti 'import { DB } from "../config/connections.js";'
+// Diasumsikan file connections.js mengekspor DB sebagai module.exports = { DB: ... }
+const { DB } = require("../config/connections"); 
 
 const website = DB.define( 
   "website",
@@ -40,4 +44,5 @@ const website = DB.define(
   }
 );
 
-export default website;
+// Mengganti 'export default website;'
+module.exports = website;
