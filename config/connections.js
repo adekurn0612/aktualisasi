@@ -9,7 +9,7 @@ const DB = new Sequelize({
   host: process.env.DB_HOST,
   // Port default MySQL adalah 3306, tapi Anda bisa mengaturnya dari env jika perlu
   port: process.env.DB_PORT || 3306,
-  dialect: "mysql", // *** PERUBAHAN UTAMA: Ubah ke 'mysql' ***
+  dialect: "postgres", // *** PERUBAHAN UTAMA: Ubah ke 'mysql' ***
   pool: {
     max: 10,
     min: 0,
