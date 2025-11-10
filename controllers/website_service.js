@@ -9,7 +9,7 @@ const { sendTelegramMessage } = require("./send_telegram.js");
 const axios = require('axios');
 
 const getWebsitesToCheck = async () => {
-    return await website.findAll(); 
+    return await website.findAll();
 };
 
 // Mengganti 'export const checkAndSaveDomainStatus = async () => { ... }'
@@ -23,10 +23,20 @@ const checkAndSaveDomainStatus = async () => {
         let newStatus = 1; // Default: UP
         let kode = 0;       // Kode HTTP
         let latency = 0.0;
-        
+
         try {
             // timeout harus dalam milidetik
-            const response = await axios.head(d.url, { timeout: 5000 }); 
+            let config = {
+                method: 'head',
+                maxBodyLength: Infinity,
+                url: d.url,
+                timeout: 15000,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36'
+                }
+            };
+
+            const response = await axios.request(config)
             latency = Date.now() - start;
             kode = response.status;
 
@@ -39,7 +49,7 @@ const checkAndSaveDomainStatus = async () => {
             latency = Date.now() - start;
             newStatus = 0; // DOWN
             // Gunakan 503 jika error tidak memiliki response (misalnya timeout, DNS error)
-            kode = error.response ? error.response.status : 503; 
+            kode = error.response ? error.response.status : 503;
         }
 
         // Kirim notifikasi hanya jika status berubah dari UP ke DOWN
@@ -49,13 +59,19 @@ const checkAndSaveDomainStatus = async () => {
             // bergantung pada modul internal lain. Log errornya akan terlihat di stderr.log
             sendTelegramMessage(message).catch(err => console.error('Failed to send Telegram:', err));
         }
+        else if (d.status === 0 && newStatus === 1) {
+            const message = `✅ ${d.name || d.url} sedang Kembali Online!`;
+            // Pastikan error handling di sini juga menggunakan CommonJS jika sendTelegramMessage
+            // bergantung pada modul internal lain. Log errornya akan terlihat di stderr.log
+            sendTelegramMessage(message).catch(err => console.error('Failed to send Telegram:', err));
+        }
 
         // Update record di database
         await website.update({
-            status: newStatus,         
-            kode: kode,                
+            status: newStatus,
+            kode: kode,
             // Pastikan latency disimpan sebagai string/number yang sesuai di DB
-            latency: parseFloat(latency).toFixed(2), 
+            latency: parseFloat(latency).toFixed(2),
             last_checked: new Date()
         }, {
             where: { id: d.id }
@@ -70,6 +86,6 @@ const checkAndSaveDomainStatus = async () => {
 };
 
 // Ekspor function ini agar bisa dipanggil dari app.js (atau file scheduler)
-module.exports = { 
-    checkAndSaveDomainStatus 
+module.exports = {
+    checkAndSaveDomainStatus
 };

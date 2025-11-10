@@ -64,7 +64,7 @@ app.use(router);
 // };
 
 const scheduleWebsiteChecker = () => {
-    const task = cron.schedule('* * * * *', () => {
+    const task = cron.schedule(process.env.CRON, () => {
         console.log('Cron running every minute:', new Date());
         checkAndSaveDomainStatus();
     }, {
