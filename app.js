@@ -15,10 +15,13 @@ app.use(Express.json());
 app.get("/about", (req, res) => {
     res.send("This is the about page.");
   });
+app.get("/api-monitoring-website", (req, res) => {
+    res.send("This is the about page.");
+  });
 
 app.use(Express.urlencoded({ extended: true }));
 app.use(cors())
-app.use(router);
+app.use("/api-monitoring-website" ,router);
 app.use(morgan("dev"));
 
 const scheduleWebsiteChecker = () => {
